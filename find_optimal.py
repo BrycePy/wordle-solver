@@ -15,6 +15,8 @@ for c, count in sorted_freq:
 
 freq_string = "".join([x[0] for x in sorted_freq][::-1])
 
+print(freq_string[:20])
+
 available_0 = set(freq_string[:20])
 for i1, word1 in enumerate(words.answers):
     available_1 = available_0.difference(set(word1))

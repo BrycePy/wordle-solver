@@ -1,5 +1,7 @@
 import words
 from colored import fg, bg, attr
+import keyboard
+import time
 
 class Guess:
     def __init__(self, target_word, guess):
@@ -23,6 +25,21 @@ class Guess:
                 hint[i] = 1
                 temp[at] = None
         return list(zip(self.guess, hint))
+
+    def get_hint_tuple(self):
+        temp = list(self.target_word)
+        hint = [0, 0, 0, 0, 0]
+        for i, char in enumerate(self.guess):
+            if char == temp[i]:
+                hint[i] = 2
+                temp[i] = None
+        for i, char in enumerate(self.guess):
+            if hint[i] == 2: continue
+            if char in temp:
+                at = temp.index(char)
+                hint[i] = 1
+                temp[at] = None
+        return hint
 
 class Player:
     def next_guess(self, game_state):
@@ -60,8 +77,6 @@ class Wordle:
         self.game_state.append(guess_obj.get_hint())
         if guess_obj.is_correct():
             self.end(True)
-        # elif len(self.game_state)==6:
-        #     self.end(False)
 
     def play(self, word=None):
         self.set_word(word)
@@ -87,6 +102,18 @@ class Wordle:
         cloned.game_state = self.game_state.copy()
         cloned.ended = self.ended
         return cloned
+
+    def play_manual(self):
+        while not self.ended:
+            player_guess = self.player.next_guess(self.game_state).lower()
+            print("guess>", player_guess)
+            time.sleep(2)
+            keyboard.write(player_guess+"\n")
+            hints = input("result>")
+            self.game_state.append(list(zip(player_guess, map(int, hints))))
+            if hints == "22222":
+                self.end(True)
+
 
 if __name__ == "__main__":
     print(len(words.words), len(words.answers))

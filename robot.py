@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 # THIRD_GUESS = "pouty"
 
 # test_string = "adult horny spice".split()
-guesses = "thumb scarf lodge pinky".split()
+guesses = "thumb lodge scarf pinky".split()
 
 
 def variance(data):
@@ -73,13 +73,15 @@ class Robot(wordle.Player):
         return possible_words
 
     def next_guess(self, game_state):
-        test = self.pick_next(game_state)
-        if len(test)==1: return test[0]
+        possible_words = self.pick_next(game_state)
 
-        if len(game_state) <=3:
+        if len(possible_words)==1:
+            return possible_words[0]
+
+        if len(game_state) <= 3:
             return guesses[len(game_state)]
 
-        return test[0]
+        return possible_words[0]
 
     def game_end(self, won, game_state):
         return
@@ -93,7 +95,7 @@ def simulate(word):
 
 
 def main():
-    with Pool(15) as p:
+    with Pool(1) as p:
         r = list(tqdm.tqdm(p.imap(simulate, words.answers),
                 total=len(words.answers)))
 

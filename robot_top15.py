@@ -4,23 +4,7 @@ from multiprocessing import Pool
 import tqdm
 import matplotlib.pyplot as plt
 
-# FIRST_GUESS = "colds"
-# SECOND_GUESS = "their"
-
-# FIRST_GUESS = "slide"
-# SECOND_GUESS = "ranch"
-# THIRD_GUESS = "pouty"
-
-# test_string = "adult horny spice".split()
 guesses = "thumb lodge scarf pinky".split()
-
-
-def variance(data):
-    n = len(data)
-    mean = sum(data) / n
-    deviations = [(x - mean) ** 2 for x in data]
-    variance = sum(deviations) / n
-    return variance
 
 class Robot(wordle.Player):
     def __init__(self):
@@ -84,34 +68,45 @@ class Robot(wordle.Player):
         return possible_words[0]
 
     def game_end(self, won, game_state):
+        #self.print_game(game_state)
         return
 
-
-def simulate(word):
-    player = Robot()
-    game = wordle.Wordle(player, word)
-    result = game.play()
-    return result
-
-
-def main():
-    with Pool(1) as p:
-        r = list(tqdm.tqdm(p.imap(simulate, words.answers),
-                total=len(words.answers)))
-
-    fail = sum(1 for x in r if x > 6)
-
-    print("average", sum(r)/len(r))
-    print("min", min(r))
-    print("max", max(r))
-    print("fail_rate", fail, fail/len(r))
-    print("standard d", variance(r)**0.5)
-
-    n = 10
-    values_count = [r.count(x) for x in range(n)]
-
-    plt.bar(range(n), values_count)
-    plt.show()
-
 if __name__ == "__main__":
+
+    def variance(data):
+        n = len(data)
+        mean = sum(data) / n
+        deviations = [(x - mean) ** 2 for x in data]
+        variance = sum(deviations) / n
+        return variance
+
+    def simulate(word):
+        player = Robot()
+        game = wordle.Wordle(player, word)
+        result = game.play()
+        return result
+
+
+    def main():
+        r = list(tqdm.tqdm(map(simulate, words.answers), total=len(words.answers)))
+
+        fail = sum(1 for x in r if x > 6)
+
+        print("average", sum(r)/len(r))
+        print("min", min(r))
+        print("max", max(r))
+        print("fail_rate", fail, fail/len(r))
+        print("standard d", variance(r)**0.5)
+
+        n = 10
+        values_count = [r.count(x) for x in range(n)]
+
+        plt.bar(range(n), values_count)
+        plt.show()
+
+    def play():
+        player = Robot()
+        game = wordle.Wordle(player, "words")
+        game.play_manual()
+
     main()

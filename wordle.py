@@ -103,12 +103,13 @@ class Wordle:
         cloned.ended = self.ended
         return cloned
 
-    def play_manual(self):
+    def play_manual(self, send_key=False):
         while not self.ended:
             player_guess = self.player.next_guess(self.game_state).lower()
             print("guess>", player_guess)
-            time.sleep(2)
-            keyboard.write(player_guess+"\n")
+            if send_key:
+                time.sleep(2)
+                keyboard.write(player_guess+"\n")
             hints = input("result>")
             self.game_state.append(list(zip(player_guess, map(int, hints))))
             if hints == "22222":
